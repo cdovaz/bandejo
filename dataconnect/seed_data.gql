@@ -1,0 +1,108 @@
+mutation SeedData @transaction @auth(level: PUBLIC, insecureReason: "Seed data operations are safe to expose to the public.") {
+  restaurant_insertMany(data: [
+    {
+      id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+      name: "The Golden Spoon",
+      location: "Downtown",
+      operatingHours: "9 AM - 10 PM",
+      cuisineType: "Italian",
+      description: "A cozy Italian restaurant.",
+      imageUrl: "https://example.com/golden_spoon.jpg",
+      contactInfo: "555-1234",
+      createdAt: "2023-01-01T10:00:00Z"
+    },
+    {
+      id: "f1e2d3c4-b5a6-0987-6543-210fedcba987",
+      name: "Sushi Heaven",
+      location: "Uptown",
+      operatingHours: "11 AM - 11 PM",
+      cuisineType: "Japanese",
+      description: "Authentic sushi and sashimi.",
+      imageUrl: "https://example.com/sushi_heaven.jpg",
+      contactInfo: "555-5678",
+      createdAt: "2023-01-02T11:00:00Z"
+    }
+  ])
+  student_insertMany(data: [
+    {
+      id: "12345678-abcd-efgh-ijkl-mnopqrstuvwx",
+      username: "john.doe",
+      email: "john.doe@example.com",
+      createdAt: "2023-01-01T09:00:00Z",
+      firstName: "John",
+      lastName: "Doe",
+      preferredCuisine: "Italian",
+      campusLocation: "Main Campus"
+    },
+    {
+      id: "87654321-wxyz-vuts-rqpo-nmlkjihgfedc",
+      username: "jane.smith",
+      email: "jane.smith@example.com",
+      createdAt: "2023-01-02T09:30:00Z",
+      firstName: "Jane",
+      lastName: "Smith",
+      preferredCuisine: "Japanese",
+      campusLocation: "West Campus"
+    }
+  ])
+  promotion_insertMany(data: [
+    {
+      restaurantId: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+      title: "20% Off Italian Delights",
+      description: "Enjoy 20% off on all Italian dishes.",
+      startDate: "2023-03-01",
+      endDate: "2023-03-31",
+      createdAt: "2023-02-28T14:00:00Z",
+      discountPercentage: 20.0,
+      couponCode: "ITALIAN20",
+      termsAndConditions: "Valid for dine-in only."
+    },
+    {
+      restaurantId: "f1e2d3c4-b5a6-0987-6543-210fedcba987",
+      title: "Free Miso Soup",
+      description: "Get a no-cost miso soup with any sushi order over $20.",
+      startDate: "2023-03-05",
+      endDate: "2023-03-15",
+      createdAt: "2023-03-04T10:00:00Z",
+      couponCode: "MISOSOUPSPECIAL"
+    }
+  ])
+  queueTime_insertMany(data: [
+    {
+      restaurantId: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+      estimatedWaitMinutes: 15,
+      lastUpdated: "2023-03-06T18:00:00Z",
+      createdAt: "2023-03-06T17:55:00Z",
+      reportedByStudentId: "12345678-abcd-efgh-ijkl-mnopqrstuvwx"
+    },
+    {
+      restaurantId: "f1e2d3c4-b5a6-0987-6543-210fedcba987",
+      estimatedWaitMinutes: 30,
+      lastUpdated: "2023-03-06T19:30:00Z",
+      createdAt: "2023-03-06T19:20:00Z",
+      reportedByStudentId: "87654321-wxyz-vuts-rqpo-nmlkjihgfedc"
+    }
+  ])
+  advertisement_insertMany(data: [
+    {
+      title: "Taste of Italy!",
+      imageUrl: "https://example.com/ad_italy.jpg",
+      targetAudience: "Food Lovers",
+      createdAt: "2023-03-01T08:00:00Z",
+      description: "Experience authentic Italian cuisine at The Golden Spoon.",
+      clickThroughUrl: "https://example.com/golden_spoon_promo",
+      startDate: "2023-03-01",
+      endDate: "2023-03-15"
+    },
+    {
+      title: "Fresh Sushi Daily",
+      imageUrl: "https://example.com/ad_sushi.jpg",
+      targetAudience: "Japanese Food Enthusiasts",
+      createdAt: "2023-03-02T09:00:00Z",
+      description: "Enjoy the freshest sushi at Sushi Heaven. Limited time offers!",
+      clickThroughUrl: "https://example.com/sushi_heaven_deals",
+      startDate: "2023-03-02",
+      endDate: "2023-03-10"
+    }
+  ])
+}

@@ -1,0 +1,51 @@
+type Student @table {
+  username: String!
+  email: String!
+  createdAt: Timestamp!
+  firstName: String
+  lastName: String
+  preferredCuisine: String
+  campusLocation: String
+}
+
+type Restaurant @table {
+  name: String!
+  location: String!
+  operatingHours: String!
+  createdAt: Timestamp!
+  cuisineType: String
+  description: String
+  imageUrl: String
+  contactInfo: String
+}
+
+type QueueTime @table {
+  restaurant: Restaurant!
+  estimatedWaitMinutes: Int!
+  lastUpdated: Timestamp!
+  createdAt: Timestamp!
+  reportedByStudent: Student
+}
+
+type Advertisement @table {
+  title: String!
+  imageUrl: String!
+  targetAudience: String!
+  createdAt: Timestamp!
+  description: String
+  clickThroughUrl: String
+  startDate: Date
+  endDate: Date
+}
+
+type Promotion @table {
+  restaurant: Restaurant!
+  title: String!
+  description: String!
+  startDate: Date!
+  endDate: Date!
+  createdAt: Timestamp!
+  discountPercentage: Float
+  couponCode: String
+  termsAndConditions: String
+}

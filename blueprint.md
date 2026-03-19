@@ -11,6 +11,7 @@ Bandejo is a web application designed to simplify university life for students. 
 *   **Framework:** Next.js (with App Router)
 *   **Language:** TypeScript
 *   **Styling:** Tailwind CSS
+*   **Authentication:** Firebase Authentication (Google Provider)
 
 ### Design and Styling
 
@@ -27,12 +28,21 @@ Bandejo is a web application designed to simplify university life for students. 
 *   **Login Page (`/`):**
     *   The application starts with a conditional rendering logic in the main `page.tsx`.
     *   If the user is not logged in, a full-screen `LoginForm` component is displayed.
-    *   The login form has fields for email and password.
+    *   The login form provides a Google login option using Firebase Authentication.
     *   Upon successful login, the state changes, and the `HomeScreen` is rendered.
 *   **Home Screen:**
     *   Displayed after the user logs in.
     *   A hero section with a prominent welcome message.
     *   A section displaying two "Card" components side-by-side, each with an emoji and a title.
+
+## Current Task: Implement Firebase Google Login
+
+### Plan
+
+1.  **Configure Firebase:** Set up a `firebase.tsx` library file with Firebase configuration and a `signInWithGoogle` function.
+2.  **Update Login Form:** Modify `LoginForm.tsx` to call the `signInWithGoogle` function on button click.
+3.  **Install Dependencies:** Add the `firebase` package to the project.
+4.  **Update Blueprint:** Document the changes in the `blueprint.md` file.
 
 ## Development Log
 
@@ -50,6 +60,11 @@ Bandejo is a web application designed to simplify university life for students. 
 6.  **Refactoring and Simplification:**
     *   Removed the `/home`, `/menu`, and `/bus` pages and the `Navbar.tsx` component to simplify the application.
     *   The main `page.tsx` now conditionally renders the `LoginForm` or the `HomeScreen` based on a `isLoggedIn` state.
-    *   Simplified the `LoginForm` by removing the Google login option.
     *   Created a reusable `Card.tsx` component to display an emoji and a title.
     *   Updated the `HomeScreen` to display two instances of the `Card` component.
+7.  **Google-Only Login:**
+    *   Simplified the `LoginForm.tsx` component to exclusively feature a Google login button, removing the previous email/password form.
+8.  **Firebase Integration:**
+    *   Created `src/lib/firebase.tsx` to initialize Firebase and handle Google authentication.
+    *   Updated `LoginForm.tsx` to use the `signInWithGoogle` function.
+    *   Installed the `firebase` npm package.

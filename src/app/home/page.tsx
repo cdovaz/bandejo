@@ -1,3 +1,5 @@
+import ActionCard from '../../components/ActionCard';
+
 export default function HomePage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-900 text-white">
@@ -16,19 +18,27 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="mt-16 flex flex-wrap justify-center gap-8">
-          <div className="transform transition-transform duration-300 hover:scale-105">
-            <div className="w-64 rounded-lg bg-gray-800 p-6 text-center shadow-lg">
-              <div className="text-6xl">🚌</div>
-              <h3 className="mt-4 text-2xl font-bold">Busão</h3>
-            </div>
-          </div>
-          <div className="transform transition-transform duration-300 hover:scale-105">
-            <div className="w-64 rounded-lg bg-gray-800 p-6 text-center shadow-lg">
-              <div className="text-6xl">🍔</div>
-              <h3 className="mt-4 text-2xl font-bold">Bandeco</h3>
-            </div>
-          </div>
+        <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+          <ActionCard
+            headline="Bandejão Central"
+            queueTime="1h40min"
+            reportCount="56 pessoas"
+          />
+          <ActionCard
+            headline="Bandejão da Quimica"
+            queueTime="25min"
+            reportCount="12 pessoas"
+          />
+          <ActionCard
+            headline="Bandejão da Fisica"
+            queueTime="35min"
+            reportCount="23 pessoas"
+          />
+          <ActionCard
+            headline="Bandejão da Puc"
+            queueTime="15min"
+            reportCount="8 pessoas"
+          />
         </div>
       </main>
     </div>

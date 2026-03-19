@@ -1,0 +1,45 @@
+# This operation fetches the profile of the currently logged-in user.
+# It requires user authentication and uses 'auth.uid' to identify the user.
+query MyProfile @auth(level: USER, insecureReason: "This query fetches the current user's profile which is only accessible to the logged-in user themselves.") {
+  users(where: { id: { eq_expr: "auth.uid" } }) {
+    id
+    username
+    email
+    avatarUrl
+    bio
+  }
+}
+
+# This operation allows a user to update their own profile information.
+# It requires user authentication and uses 'auth.uid' to ensure only the owner can update their profile.
+mutation UpdateMyProfile($username: String, $email: String, $avatarUrl: String, $bio: String) @auth(level: USER, insecureReason: "This mutation allows a logged-in user to update their own profile, identified by 'auth.uid'.") {
+  user_update(
+    key: { id: "auth.uid" }
+    data: {
+      username: $username
+      email: $email
+      avatarUrl: $avatarUrl
+      bio: $bio
+    }
+  )
+}
+
+# This operation fetches a list of all users.
+# It is accessible to any logged-in user, but does not expose sensitive information.
+query ListAllUsers @auth(level: USER, insecureReason: "This operation provides a list of all users, which is safe to expose to any logged-in user as it doesn't reveal sensitive data.") {
+  users {
+    id
+    username
+    avatarUrl
+    bio
+  }
+}
+
+# This operation creates a new user.
+# While it's generally handled through Firebase Authentication, if a direct creation through FDC is intended,
+# it would likely be handled by an admin or a system process, hence a specific auth expression or admin credentials would be ideal.
+# For demonstration purposes, we'll assume a system-level insertion for initial seeding or admin use.
+# Note: In a real-world scenario, user sign-up would typically use Firebase Authentication.
+mutation CreateNewUser($id: String!, $username: String!, $email: String!, $createdAt: Timestamp!) @auth(expr: "auth.token.admin == true", insecureReason: "This operation is for creating new users and should only be accessible by administrators.") {
+  user_insert(data: { id: $id, username: $username, email: $email, createdAt: $createdAt })
+}
