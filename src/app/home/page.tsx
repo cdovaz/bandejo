@@ -30,6 +30,7 @@ interface EventData {
   tags: string[];
   location: string;
   description: string;
+  href?: string;
 }
 
 export default function HomePage() {
@@ -172,6 +173,7 @@ export default function HomePage() {
                     tags={event.tags || []} // Em breve vamos trocar isso para as tags!
                     location={event.location}
                     description={event.description}
+                    href={event.href}
                   />
                 </div>
               ))

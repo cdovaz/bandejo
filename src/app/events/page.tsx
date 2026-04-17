@@ -20,6 +20,7 @@ interface EventData {
   location: string;
   description: string;
   createdAt?: any;
+  href?: string;
 }
 
 export default function EventsPage() {
@@ -137,6 +138,7 @@ export default function EventsPage() {
                 tags={event.tags || []} // Passando o array de tags corretamente
                 location={event.location}
                 description={event.description}
+                href={event.href}
               />
             </div>
           ))}
