@@ -25,7 +25,8 @@ export default function Navbar() {
 
       {/* Ícone Inteligente do Canto da Tela */}
       <button 
-        onClick={() => user ? router.push("/profile") : router.push("/")}
+        // A MUDANÇA FOI AQUI: router.push("/login")
+        onClick={() => user ? router.push("/profile") : router.push("/login")}
         className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-full transition-all border border-slate-700"
       >
         {/* Se tiver foto do Google, mostra a foto. Senão, mostra o ícone de usuário */}

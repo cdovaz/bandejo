@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { ArrowRight, User, Calendar } from "lucide-react";
+import { onAuthStateChanged } from "firebase/auth"; // Tiramos o signInWithPopup daqui
 
 export default function HeroSection() {
   const router = useRouter();
@@ -16,6 +16,15 @@ export default function HeroSection() {
     });
     return () => unsubscribe();
   }, []);
+
+  // A função agora atua apenas como um "guarda de trânsito"
+  const handleMainAction = () => {
+    if (user) {
+      router.push("/profile"); // Se tá logado, vai pro perfil
+    } else {
+      router.push("/login");   // Se NÃO tá logado, vai pra sua página de login
+    }
+  };
 
   return (
     <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-8 rounded-3xl text-white shadow-xl relative overflow-hidden">
@@ -32,7 +41,7 @@ export default function HeroSection() {
           
           {/* Botão de Autenticação (Ação Primária) */}
           <button 
-            onClick={() => user ? router.push("/profile") : router.push("/")}
+            onClick={handleMainAction}
             className="bg-white text-blue-600 hover:bg-blue-50 px-6 py-3.5 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg"
           >
             {user ? (
