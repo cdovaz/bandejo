@@ -35,7 +35,7 @@ interface EventData {
 export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [restaurantToEvaluate, setRestaurantToEvaluate] = useState({ id: "", name: "" });
-
+  const [activeTab, setActiveTab] = useState<"filas" | "eventos">("filas");
   
 
   // 3. Estados Duplos: Restaurantes e Eventos
@@ -109,26 +109,43 @@ export default function HomePage() {
       
       <HeroSection/>
 
-      {/* Título do Feed */}
-      <div className="flex items-center gap-2 mb-4">
-        <LayoutList className="w-6 h-6 text-blue-500" />
-        <h2 className="text-xl font-bold text-slate-50">
-          Feed do Campus
-        </h2>
+      {/* --- SISTEMA DE ABAS --- */}
+      <div className="flex p-1 bg-slate-800 rounded-2xl mb-6 shadow-inner">
+        <button 
+          onClick={() => setActiveTab("filas")}
+          className={`flex-1 py-3 rounded-xl font-bold text-sm transition-all ${
+            activeTab === "filas" 
+            ? "bg-slate-700 text-blue-400 shadow-md" 
+            : "text-slate-400 hover:text-slate-200"
+          }`}
+        >
+          Radar de Filas
+        </button>
+        <button 
+          onClick={() => setActiveTab("eventos")}
+          className={`flex-1 py-3 rounded-xl font-bold text-sm transition-all ${
+            activeTab === "eventos" 
+            ? "bg-slate-700 text-purple-400 shadow-md" 
+            : "text-slate-400 hover:text-slate-200"
+          }`}
+        >
+          Eventos do Campus
+        </button>
       </div>
 
       {isScreenLoading ? (
         <div className="flex flex-col items-center justify-center py-10 bg-slate-900 border border-slate-800 rounded-2xl shadow-sm">
           <Loader2 className="w-8 h-8 animate-spin mb-2 text-blue-500" />
-          <p className="text-sm font-medium text-slate-400">Montando seu feed...</p>
+          <p className="text-sm font-medium text-slate-400">Carregando dados...</p>
         </div>
-      ) : mixedFeed.length > 0 ? (
+      ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {mixedFeed.map((item, index) => {
-            if (item.type === "restaurant") {
-              const rest = item.data as Restaurant;
-              return (
-                <div key={`rest-${rest.id}`} className="h-full">
+          
+          {/* RENDERIZAÇÃO CONDICIONAL BASEADA NA ABA ATIVA */}
+          {activeTab === "filas" ? (
+            restaurants.length > 0 ? (
+              restaurants.map((rest) => (
+                <div key={`rest-${rest.id}`} className="h-full animate-in fade-in zoom-in-95 duration-300">
                   <RestaurantItem 
                     name={rest.name}
                     emoji={rest.emoji}
@@ -138,29 +155,33 @@ export default function HomePage() {
                     onEvaluate={() => handleOpenEvaluate(rest.id, rest.name)}
                   />
                 </div>
-              );
-            }
-            
-            if (item.type === "event") {
-              const event = item.data as EventData;
-              return (
-                <div key={`event-${event.id}`} className="h-full">
+              ))
+            ) : (
+              <div className="col-span-1 md:col-span-2 text-center p-6 bg-slate-900 rounded-2xl border border-dashed border-slate-700 text-slate-400 text-sm">
+                Nenhum bandejão encontrado no radar.
+              </div>
+            )
+          ) : (
+            events.length > 0 ? (
+              events.map((event) => (
+                <div key={`event-${event.id}`} className="h-full animate-in fade-in zoom-in-95 duration-300">
                   <EventCard 
                     title={event.title}
                     entity={event.entity}
                     date={event.date}
-                    category={event.category}
+                    category={event.category} // Em breve vamos trocar isso para as tags!
                     location={event.location}
                     description={event.description}
                   />
                 </div>
-              );
-            }
-          })}
-        </div>
-      ) : (
-        <div className="text-center p-6 bg-slate-900 rounded-2xl border border-dashed border-slate-700 text-slate-400 text-sm">
-          O feed está vazio no momento.
+              ))
+            ) : (
+              <div className="col-span-1 md:col-span-2 text-center p-6 bg-slate-900 rounded-2xl border border-dashed border-slate-700 text-slate-400 text-sm">
+                Nenhum evento no ecossistema no momento.
+              </div>
+            )
+          )}
+
         </div>
       )}
       
