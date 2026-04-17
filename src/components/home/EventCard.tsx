@@ -6,7 +6,7 @@ interface EventCardProps {
   entity: string;
   date: string;
   description: string;
-  category?: string;
+  tags?: string[];
   location?: string;
   href?: string;
 }
@@ -16,7 +16,7 @@ export default function EventCard({
   entity,
   date,
   description,
-  category = "Evento",
+  tags = ["Evento"],
   location = "A definir",
   href = "#"
 }: EventCardProps) {
@@ -24,15 +24,26 @@ export default function EventCard({
     <Link href={href} className="block group h-full">
       <div className="flex flex-col h-full p-5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-slate-700 hover:shadow-lg shadow-black/30 transition-all duration-300">
         
-        {/* Cabeçalho do Card */}
-        <div className="flex justify-between items-start mb-3">
-          <span className="text-xs font-bold text-blue-400 uppercase tracking-wider bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 rounded-md">
-            {category}
-          </span>
-          <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400 bg-slate-950 border border-slate-800 px-2.5 py-1 rounded-md">
+        <div className="flex justify-between items-start mb-3 gap-2">
+          
+          {/* Container das Tags (com flex-wrap para quebrarem de linha se tiver muitas) */}
+          <div className="flex flex-wrap gap-2 flex-1">
+            {tags.map((tag, index) => (
+              <span 
+                key={index} 
+                className="text-xs font-bold text-blue-400 uppercase tracking-wider bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 rounded-md whitespace-nowrap"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Data do Evento (com shrink-0 para nunca ser esmagada pelas tags) */}
+          <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400 bg-slate-950 border border-slate-800 px-2.5 py-1 rounded-md shrink-0">
             <Calendar className="w-3.5 h-3.5 text-slate-500" />
             {date}
           </div>
+
         </div>
 
         {/* Título e Entidade */}

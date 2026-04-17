@@ -27,7 +27,7 @@ interface EventData {
   title: string;
   entity: string;
   date: string;
-  category: string;
+  tags: string[];
   location: string;
   description: string;
 }
@@ -169,7 +169,7 @@ export default function HomePage() {
                     title={event.title}
                     entity={event.entity}
                     date={event.date}
-                    category={event.category} // Em breve vamos trocar isso para as tags!
+                    tags={event.tags || []} // Em breve vamos trocar isso para as tags!
                     location={event.location}
                     description={event.description}
                   />

@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Calendar, Search, Plus, Loader2 } from "lucide-react";
 
-// Reutilizando aquele EventCard bonitão que você já fez
+// Reutilizando aquele EventCard bonitão
 import EventCard from "@/components/home/EventCard"; 
 
 // Firebase
-import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 interface EventData {
@@ -16,7 +16,7 @@ interface EventData {
   title: string;
   entity: string;
   date: string;
-  category: string;
+  tags: string[]; // <-- Garantindo que é um array
   location: string;
   description: string;
   createdAt?: any;
@@ -28,11 +28,10 @@ export default function EventsPage() {
   
   // Estados para os filtros
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [selectedTag, setSelectedTag] = useState("Todos"); // <-- Renomeado para selectedTag
 
   // Escutando os eventos do banco
   useEffect(() => {
-    // Busca os eventos. Se você tiver salvo a data de criação, pode usar orderBy("createdAt", "desc")
     const q = query(collection(db, "events")); 
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -50,15 +49,18 @@ export default function EventsPage() {
     return () => unsubscribe();
   }, []);
 
-  // Extrai todas as categorias únicas que existem no banco para montar os botões de filtro
-  const categories = ["Todos", ...Array.from(new Set(events.map(e => e.category)))];
+  // 1. EXTRAÇÃO DE TAGS: Achata todos os arrays de tags e tira as duplicatas
+  const availableTags = ["Todos", ...Array.from(new Set(events.flatMap(e => e.tags || [])))];
 
-  // Filtra os eventos baseados no texto digitado e na categoria clicada
+  // 2. FILTRAGEM: Verifica se o array de tags do evento .includes() a tag clicada
   const filteredEvents = events.filter(event => {
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           event.entity.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "Todos" || event.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    
+    // Se a tag selecionada for "Todos", passa. Se não, verifica se a tag existe dentro do array do evento.
+    const matchesTag = selectedTag === "Todos" || (event.tags && event.tags.includes(selectedTag));
+    
+    return matchesSearch && matchesTag;
   });
 
   return (
@@ -76,7 +78,6 @@ export default function EventsPage() {
           </p>
         </div>
         
-        {/* Botão para criar novo evento (Rota que faremos depois) */}
         <Link 
           href="/events/new" 
           className="bg-white text-purple-600 hover:bg-purple-50 px-6 py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap"
@@ -101,19 +102,19 @@ export default function EventsPage() {
           />
         </div>
         
-        {/* Chips de Categoria */}
+        {/* Chips de Tags */}
         <div className="flex gap-2 overflow-x-auto w-full pb-2 md:pb-0 scrollbar-hide">
-          {categories.map(category => (
+          {availableTags.map(tag => (
             <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
+              key={tag}
+              onClick={() => setSelectedTag(tag)}
               className={`whitespace-nowrap px-4 py-2 rounded-xl font-bold text-sm transition-all ${
-                selectedCategory === category 
+                selectedTag === tag 
                 ? 'bg-blue-600 text-white border-2 border-blue-500' 
                 : 'bg-slate-950 text-slate-400 border-2 border-transparent hover:bg-slate-800'
               }`}
             >
-              {category}
+              {tag}
             </button>
           ))}
         </div>
@@ -133,7 +134,7 @@ export default function EventsPage() {
                 title={event.title}
                 entity={event.entity}
                 date={event.date}
-                category={event.category}
+                tags={event.tags || []} // Passando o array de tags corretamente
                 location={event.location}
                 description={event.description}
               />
