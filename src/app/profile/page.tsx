@@ -2,12 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
+// IMPORTANTE: Adicionamos o signOut aqui
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
-import { User, BookOpen, Building2, Save, Loader2, Award, ArrowLeft } from "lucide-react";
+// IMPORTANTE: Adicionamos o LogOut nos ícones
+import { User, BookOpen, Building2, Save, Loader2, Award, ArrowLeft, LogOut } from "lucide-react";
 import Link from "next/link";
+// IMPORTANTE: Adicionamos o useRouter para o redirecionamento
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -57,8 +62,6 @@ export default function ProfilePage() {
     setMessage({ text: "", type: "" });
 
     try {
-      // Usamos setDoc com { merge: true } para criar o documento se não existir, 
-      // ou atualizar apenas esses campos específicos se já existir.
       await setDoc(doc(db, "users", userId), {
         displayName: formData.displayName,
         institute: formData.institute,
@@ -73,8 +76,17 @@ export default function ProfilePage() {
       setMessage({ text: "Ocorreu um erro ao salvar. Tente novamente.", type: "error" });
     } finally {
       setIsSaving(false);
-      // Apaga a mensagem de sucesso depois de 3 segundos
       setTimeout(() => setMessage({ text: "", type: "" }), 3000);
+    }
+  };
+
+  // 3. Função de Logout
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.push("/"); // Manda o usuário de volta para a tela inicial
+    } catch (error) {
+      console.error("Erro ao sair da conta:", error);
     }
   };
 
@@ -105,7 +117,6 @@ export default function ProfilePage() {
 
       <form onSubmit={handleSave} className="mt-8 bg-slate-900 p-8 rounded-3xl border border-slate-800 shadow-2xl space-y-6">
         
-        {/* Mensagem de Feedback */}
         {message.text && (
           <div className={`p-4 rounded-xl text-sm font-bold animate-in zoom-in-95 ${
             message.type === "success" ? "bg-green-500/10 text-green-400 border border-green-500/20" : "bg-red-500/10 text-red-400 border border-red-500/20"
@@ -165,13 +176,25 @@ export default function ProfilePage() {
           <p className="text-xs text-slate-500 ml-1">Essas informações ajudam a gente a recomendar eventos da sua área.</p>
         </div>
 
-        <button 
-          type="submit" 
-          disabled={isSaving} 
-          className="w-full mt-4 py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-500 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-900/20 disabled:opacity-50"
-        >
-          {isSaving ? <Loader2 className="animate-spin" /> : <><Save className="w-5 h-5" /> Salvar Perfil</>}
-        </button>
+        {/* CONTAINER DOS BOTÕES */}
+        <div className="space-y-3 pt-4">
+          <button 
+            type="submit" 
+            disabled={isSaving} 
+            className="w-full py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-500 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-900/20 disabled:opacity-50"
+          >
+            {isSaving ? <Loader2 className="animate-spin" /> : <><Save className="w-5 h-5" /> Salvar Perfil</>}
+          </button>
+
+          {/* BOTÃO DE LOGOUT - O type="button" é crucial para não disparar o form */}
+          <button 
+            type="button" 
+            onClick={handleLogout}
+            className="w-full py-4 bg-transparent border border-red-500/20 text-red-400 font-bold rounded-2xl hover:bg-red-500/10 hover:border-red-500/50 transition-all flex items-center justify-center gap-2"
+          >
+            <LogOut className="w-5 h-5" /> Sair da Conta
+          </button>
+        </div>
 
       </form>
     </div>
